@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>A First Page Gift for Maplewood Elementary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#FFCC2A; --yellow-deep:#F5B800; --cream:#FFF6DC; --cream-soft:#FFFBEE;
+    --navy:#12294B; --navy-deep:#0C1D36; --ink:#1B2430; --grey:#6A7382; --white:#FFFFFF;
+    --wood:#B98A5A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Asap',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.55}
+  img{max-width:100%;display:block}
+  button{font-family:inherit;cursor:pointer}
+  .proto{background:var(--navy-deep);color:#BFD0E8;font-size:12px;text-align:center;padding:6px 14px}
+  .proto strong{color:var(--yellow)}
+
+  section{padding:76px 7vw;opacity:0;transform:translateY(24px);transition:opacity .85s ease,transform .85s ease}
+  section.seen{opacity:1;transform:none}
+  .inner{max-width:900px;margin:0 auto;text-align:center}
+
+  /* 1. the gift */
+  .open{background:var(--navy);color:var(--white);min-height:92vh;display:flex;align-items:center}
+  .open .k{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--yellow)}
+  .open h1{font-size:clamp(30px,4.6vw,52px);font-weight:800;line-height:1.12;margin-top:16px}
+  .open .from{margin-top:14px;color:#C7D4E8;font-size:17px}
+  .open .from b{color:var(--white)}
+
+  .cover{width:min(300px,72vw);aspect-ratio:1/1.06;margin:44px auto 0;border-radius:10px 16px 16px 10px;position:relative;background:repeating-linear-gradient(135deg,var(--yellow) 0 24px,var(--yellow-deep) 24px 48px);box-shadow:0 34px 80px rgba(0,0,0,.45),inset -7px 0 13px rgba(0,0,0,.1);padding:24px 22px;display:flex;flex-direction:column;transform:rotate(-1.5deg)}
+  .cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:11px;background:rgba(18,41,75,.18);border-radius:10px 0 0 10px}
+  .cv-title{font-size:18px;font-weight:800;color:var(--navy);text-transform:uppercase;text-align:center;line-height:1.25}
+  .cv-art{flex:1;background:var(--white);border-radius:9px;margin:12px 8px;display:flex;align-items:center;justify-content:center;font-size:56px}
+  .cv-school{text-align:center;font-size:11px;color:#5d5322;font-weight:700}
+  .seal{margin:26px auto 0;max-width:fit-content;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,204,42,.5);border-radius:999px;padding:10px 22px;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--yellow)}
+
+  /* 2. sender */
+  .sender h2{font-size:clamp(24px,3.2vw,36px);font-weight:800;color:var(--navy);line-height:1.25}
+  .sender h2 .hl{background:linear-gradient(transparent 62%,var(--yellow) 62%)}
+  .sender p{margin-top:16px;font-size:17.5px;color:var(--grey);max-width:56ch;margin-left:auto;margin-right:auto}
+  .sender img{margin:38px auto 0;max-width:480px;border-radius:20px;box-shadow:0 26px 60px rgba(18,41,75,.2)}
+
+  /* 3. the shelf */
+  .shelf-wrap{background:var(--cream-soft);border-radius:26px;padding:56px 6vw}
+  .shelf-wrap h2{font-size:clamp(24px,3.2vw,36px);font-weight:800;color:var(--navy)}
+  .shelf-wrap p{margin-top:14px;font-size:17px;color:var(--grey);max-width:54ch;margin-left:auto;margin-right:auto}
+  .shelf{margin:40px auto 0;max-width:640px}
+  .row{display:flex;gap:3px;align-items:flex-end;justify-content:center;padding:0 10px}
+  .spine{width:14px;border-radius:3px 3px 0 0;background:#EAE0C2;border:1px solid #DDD0A8;position:relative;opacity:0;animation:pop .4s ease forwards}
+  .spine.named{background:var(--yellow);border-color:var(--yellow-deep)}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .plank{height:12px;background:var(--wood);border-radius:4px;margin-top:0;box-shadow:0 6px 14px rgba(120,80,40,.3)}
+  .shelf-label{margin-top:26px;font-size:15px;font-weight:700;color:var(--navy)}
+
+  /* 4. future scene */
+  .scene{background:var(--white);border-radius:24px;padding:56px 8vw;box-shadow:0 20px 50px rgba(18,41,75,.1);max-width:820px;margin:0 auto}
+  .scene .k{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#A79A6B}
+  .scene p{margin-top:20px;font-size:clamp(18px,2.2vw,23px);font-style:italic;color:var(--navy);line-height:1.6;font-weight:500}
+
+  /* 5. facts */
+  .facts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .fact{background:var(--white);border-radius:999px;padding:12px 22px;font-size:14px;font-weight:700;color:var(--navy);box-shadow:0 6px 18px rgba(18,41,75,.08)}
+
+  /* 6. invite */
+  .cta{background:var(--yellow);border-radius:26px;padding:60px 6vw}
+  .cta h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;color:var(--navy);line-height:1.18}
+  .cta p{margin-top:16px;color:#4A3F10;font-size:17px;max-width:52ch;margin-left:auto;margin-right:auto}
+  .btn{border:none;border-radius:999px;padding:17px 36px;font-weight:800;font-size:16.5px;margin-top:28px;transition:transform .15s}
+  .btn-navy{background:var(--navy);color:#fff}
+  .btn-navy:hover{transform:translateY(-2px)}
+  .btn-ghost{background:transparent;border:2px solid var(--navy);color:var(--navy);margin-left:12px}
+  .cta .fine{margin-top:22px;font-size:12.5px;color:#6b5d20;font-style:italic}
+
+  .footer{padding:30px 6vw;display:flex;justify-content:space-between;align-items:center;color:var(--grey);font-size:12.5px;border-top:1px solid #EFE6C8;flex-wrap:wrap;gap:10px}
+  .footer img{height:30px;opacity:.85}
+
+  @media (max-width:760px){
+    section{padding:56px 6vw}
+    .btn-ghost{margin-left:0;margin-top:12px}
+    .spine{width:9px}
+  }
+</style>
+</head>
+<body>
+
+<div class="proto"><strong>Internal prototype · sample data.</strong> Invited-school page (the First Page Gift). School names, counts and scenes are fictional; student count is entered by the CS team before sending.</div>
+
+<!-- 1. the gift -->
+<section class="open seen">
+  <div class="inner">
+    <div class="k">A First Page Gift</div>
+    <h1>Maplewood Elementary,<br/>this page is yours.</h1>
+    <div class="from">passed to you by <b>Sunrise Charter Academy</b></div>
+    <div class="cover">
+      <div class="cv-title">The Authors of<br/>Maplewood Elementary</div>
+      <div class="cv-art">✍️</div>
+      <div class="cv-school">SuperAuthor · Author Circle</div>
+    </div>
+    <div class="seal">Author Circle 2026–27 · Seat 24 · reserved for Maplewood</div>
+  </div>
+</section>
+
+<!-- 2. the sender -->
+<section class="sender">
+  <div class="inner">
+    <h2>Sunrise Charter Academy is spending this year turning 460 students into published authors. When we asked which school should write its first page next, <span class="hl">they named yours.</span></h2>
+    <img src="http://superauthor.com/wp-content/uploads/2026/05/Children-SuperAuthor.png" alt="A family holding their child's published book" />
+  </div>
+</section>
+
+<!-- 3. the shelf -->
+<section>
+  <div class="shelf-wrap">
+    <div class="inner">
+      <h2>412 books, waiting to be written at Maplewood.</h2>
+      <p>Every one of your students has a story. This year, each of them could hold it — printed, bound, with their name on the cover.</p>
+      <div class="shelf" id="shelf"></div>
+      <div class="shelf-label">One spine for every Maplewood student · the first one could have a name by fall</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. the future scene -->
+<section>
+  <div class="scene">
+    <div class="k">March 2027 · a page from the future</div>
+    <p>The gym at Maplewood Elementary is full. Four hundred families, here on a weeknight — not for a game, but for a book signing. The authors are eight years old.</p>
+  </div>
+</section>
+
+<!-- 5. facts -->
+<section>
+  <div class="inner">
+    <div class="facts">
+      <span class="fact">No cost to your school</span>
+      <span class="fact">Built on what your teachers already teach</span>
+      <span class="fact">One individual book per student</span>
+    </div>
+  </div>
+</section>
+
+<!-- 6. the invite -->
+<section>
+  <div class="cta">
+    <div class="inner">
+      <h2>Your first page is blank.<br/>Want to see how it gets written?</h2>
+      <p>A 20-minute conversation. No commitment. And when your school completes its first teacher training, a $20 welcome gift comes tucked inside this First Page Gift.</p>
+      <button class="btn btn-navy" data-demo>Schedule the conversation</button>
+      <button class="btn btn-ghost" data-demo>Ask a question instead</button>
+      <div class="fine">Welcome gift delivered after your school's first teacher training. Program terms pending final review.</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <img src="http://superauthor.com/wp-content/uploads/2026/04/Logo_Super-Author_footer.png" alt="SuperAuthor" />
+  <span>Internal prototype · sample data</span>
+</div>
+
+<script>
+  // scroll reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('seen')}),{threshold:.18});
+  document.querySelectorAll('section').forEach(s=>io.observe(s));
+
+  // shelf: 412 spines across rows, heights varied; first spine highlighted
+  const shelf=document.getElementById('shelf');
+  const TOTAL=412, PER_ROW=60;
+  let made=0;
+  while(made<TOTAL){
+    const row=document.createElement('div');row.className='row';
+    const n=Math.min(PER_ROW,TOTAL-made);
+    for(let i=0;i<n;i++){
+      const s=document.createElement('div');s.className='spine'+(made===0&&i===0?' named':'');
+      s.style.height=(26+Math.round(Math.random()*16))+'px';
+      s.style.animationDelay=(Math.min(made+i,240)*4)+'ms';
+      row.appendChild(s);
+    }
+    shelf.appendChild(row);
+    const plank=document.createElement('div');plank.className='plank';
+    shelf.appendChild(plank);
+    made+=n;
+  }
+
+  // demo buttons
+  document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',e=>{
+    const el=e.currentTarget;const t=el.textContent;
+    el.textContent='✓ Prototype — real flow comes later';
+    setTimeout(()=>el.textContent=t,1800);
+  }));
+</script>
+</body>
+</html>
