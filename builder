@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pass the Pen · Personalized Link Builder</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --yellow:#FFCC2A;--yellow-deep:#F5B800;--cream:#FFF6DC;--cream-soft:#FFFBEE;
+      --navy:#12294B;--navy-deep:#0C1D36;--ink:#1B2430;--grey:#6A7382;--white:#FFFFFF;
+      --green:#0F8F71;--line:#E7E0C8;--shadow:0 18px 42px rgba(18,41,75,.10);--shadow-sm:0 7px 20px rgba(18,41,75,.08)
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Asap',system-ui,sans-serif;background:#F8F7F2;color:var(--ink);line-height:1.55}
+    button,input,textarea{font:inherit}
+    .nav{height:72px;background:var(--white);border-bottom:1px solid #ECE8DB;display:flex;align-items:center;justify-content:space-between;padding:0 40px;position:sticky;top:0;z-index:20}
+    .nav img{height:36px;width:auto;display:block}
+    .nav-actions{display:flex;gap:12px;align-items:center}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;background:var(--cream);color:var(--navy);font-size:13px;font-weight:800;padding:8px 14px}
+    .wrap{max-width:1160px;margin:0 auto;padding:44px 24px 72px}
+    .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:28px;margin-bottom:28px}
+    .hero-card{background:var(--yellow);border-radius:28px;padding:40px;box-shadow:var(--shadow);min-height:320px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;right:-80px;bottom:-100px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.23)}
+    .eyebrow{display:inline-flex;width:max-content;background:var(--navy);color:var(--yellow);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;position:relative;z-index:1}
+    h1{font-size:clamp(34px,4.4vw,50px);line-height:1.06;letter-spacing:-1.3px;color:var(--navy);position:relative;z-index:1}
+    .hero-card p{font-size:17px;line-height:1.65;color:#4A421E;max-width:620px;margin-top:18px;position:relative;z-index:1}
+    .preview-card{background:var(--navy);border-radius:28px;padding:30px;box-shadow:var(--shadow-sm);color:var(--white);display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+    .preview-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+    .preview-head span{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#9FB4D4}
+    .status{background:rgba(255,204,42,.12);border:1px solid rgba(255,204,42,.35);color:var(--yellow)!important;border-radius:999px;padding:6px 10px;white-space:nowrap}
+    .preview-copy{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px}
+    .preview-copy .mini-eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--yellow)}
+    .preview-copy h2{font-size:26px;line-height:1.15;margin-top:9px}
+    .preview-copy p{font-size:14px;color:#BFD0E8;margin-top:10px}
+    .signature{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+    .signature small{display:block;color:#9FB4D4;font-style:italic}
+    .signature strong{display:block;font-family:'Caveat',cursive;font-size:26px;color:var(--yellow);margin-top:2px}
+    .preview-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .meta-box{border-radius:14px;background:var(--white);color:var(--navy);padding:13px 14px}
+    .meta-box span{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--grey)}
+    .meta-box b{display:block;margin-top:4px;font-size:14px;overflow-wrap:anywhere}
+    .workspace{display:grid;grid-template-columns:1fr .95fr;gap:24px;align-items:start}
+    .panel{background:var(--white);border:1px solid #ECE8DB;border-radius:24px;padding:28px;box-shadow:var(--shadow-sm)}
+    .panel h2{font-size:24px;color:var(--navy);letter-spacing:-.3px}
+    .panel-sub{font-size:14px;color:var(--grey);margin-top:7px;margin-bottom:24px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field.full{grid-column:1/-1}
+    label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+    input,textarea{width:100%;border:1px solid #D8D4C8;border-radius:12px;background:var(--white);color:var(--navy);padding:13px 14px;outline:none}
+    input:focus,textarea:focus{border-color:var(--yellow-deep);box-shadow:0 0 0 4px rgba(255,204,42,.18)}
+    .hint{font-size:12px;color:var(--grey);line-height:1.45}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+    .btn{height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--navy);color:var(--white);font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;transition:.15s ease;white-space:nowrap}
+    .btn:hover{transform:translateY(-1px);background:#1D3B66}
+    .btn.yellow{background:var(--yellow);color:var(--navy)}
+    .btn.yellow:hover{background:var(--yellow-deep)}
+    .btn.secondary{background:var(--white);color:var(--navy);border:2px solid var(--navy)}
+    .btn.small{height:38px;padding:0 14px;font-size:14px}
+    .notice{margin-top:20px;border-radius:16px;background:var(--cream-soft);border:1px solid #F1E4B3;padding:14px 16px;font-size:13px;color:#665719}
+    .output-stack{display:flex;flex-direction:column;gap:16px}
+    .output-box{border:1px solid #E7E2D4;border-radius:18px;padding:18px;background:#fff}
+    .output-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+    .output-head h3{font-size:16px;color:var(--navy)}
+    .readonly{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px;line-height:1.55;min-height:88px;resize:vertical;background:#F7F8FA;color:#25364B}
+    .snippet{font-family:'Asap',sans-serif;font-size:14px;line-height:1.55;min-height:145px;background:#F7F8FA;color:#25364B}
+    .feedback{min-height:20px;font-size:13px;font-weight:800;color:var(--green);margin-top:10px}
+    .footer-note{margin-top:28px;color:var(--grey);font-size:13px;text-align:center}
+    @media(max-width:940px){.hero,.workspace{grid-template-columns:1fr}.nav{padding:0 20px}.nav-actions{display:none}.wrap{padding:32px 16px 56px}}
+    @media(max-width:620px){.form-grid,.preview-meta{grid-template-columns:1fr}.actions .btn,.output-head .btn{width:100%}.output-head{align-items:stretch;flex-direction:column}.hero-card,.preview-card,.panel{padding:24px}}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <img src="https://superauthor.com/wp-content/themes/superauthor-site/assets/images/logo-header.svg" alt="SuperAuthor" />
+    <div class="nav-actions">
+      <span class="pill">Internal builder</span>
+      <a class="btn secondary small" id="openBasePage" href="https://superauthor.com/pass-the-pen/" target="_blank" rel="noopener">Open base page</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">Referral program enablement</span>
+        <h1>Generate each school’s personalized Pass the Pen page.</h1>
+        <p>Enter the school name once. The builder creates the final URL, pre-fills the school inside the referral form, and generates the message the team can send.</p>
+      </div>
+
+      <aside class="preview-card" aria-label="Personalized page preview">
+        <div class="preview-head">
+          <span>Personalization preview</span>
+          <span class="status">Live</span>
+        </div>
+        <div class="preview-copy">
+          <div class="mini-eyebrow"><span id="previewSchoolEyebrow">Sunrise Charter Academy</span> × SuperAuthor</div>
+          <h2>A new chapter begins at <span id="previewSchoolHeadline">Sunrise Charter Academy</span>.</h2>
+          <p>The school field is pre-filled and locked when someone opens the generated page.</p>
+          <div class="signature">
+            <small>passed to them by</small>
+            <strong id="previewSchoolSignature">Sunrise Charter Academy</strong>
+          </div>
+        </div>
+        <div class="preview-meta">
+          <div class="meta-box"><span>Source code</span><b id="previewCode">SUNRISE-CHARTER-26</b></div>
+          <div class="meta-box"><span>Form attribution</span><b id="previewField">cf_school_name</b></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <div class="panel">
+        <h2>School personalization</h2>
+        <p class="panel-sub">No database is required. Every generated link carries the school name and a unique source code in its URL.</p>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label for="baseUrl">Published Pass the Pen page URL</label>
+            <input id="baseUrl" type="url" value="https://superauthor.com/pass-the-pen/" />
+            <p class="hint">Change this only if the final WordPress slug is different.</p>
+          </div>
+
+          <div class="field full">
+            <label for="schoolName">School name</label>
+            <input id="schoolName" type="text" value="Sunrise Charter Academy" maxlength="160" autocomplete="off" />
+          </div>
+
+          <div class="field full">
+            <label for="referralCode">Referral source code</label>
+            <input id="referralCode" type="text" value="SUNRISE-CHARTER-26" maxlength="80" autocomplete="off" />
+            <p class="hint">Generated automatically from the school name. Edit only when an internal naming convention requires it.</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn yellow" type="button" id="generateBtn">Generate personalized link</button>
+          <button class="btn secondary" type="button" id="clearBtn">Clear fields</button>
+        </div>
+        <div class="notice">The school name is written to <b>cf_school_name</b>. The source code is carried in the URL and UTM parameters for tracking; it does not require a new RD field in this version.</div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="panel output-stack">
+        <div class="output-box">
+          <div class="output-head">
+            <h3>Personalized page link</h3>
+            <button class="btn small" type="button" data-copy-target="generatedUrl">Copy link</button>
+          </div>
+          <textarea id="generatedUrl" class="readonly" readonly></textarea>
+          <div class="actions" style="margin-top:12px">
+            <a class="btn secondary small" id="openPreview" href="#" target="_blank" rel="noopener">Open preview</a>
+          </div>
+        </div>
+
+        <div class="output-box">
+          <div class="output-head">
+            <h3>Email message for the school</h3>
+            <button class="btn small" type="button" data-copy-target="emailSnippet">Copy message</button>
+          </div>
+          <textarea id="emailSnippet" class="snippet" readonly></textarea>
+        </div>
+
+        <div class="output-box">
+          <div class="output-head">
+            <h3>Internal tracking line</h3>
+            <button class="btn small" type="button" data-copy-target="trackingLine">Copy line</button>
+          </div>
+          <textarea id="trackingLine" class="readonly" readonly></textarea>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">Internal tool. Send only the generated personalized link to schools.</p>
+  </main>
+
+  <script>
+    (function(){
+      const DEFAULT_BASE = 'https://superauthor.com/pass-the-pen/';
+      const STORAGE_KEY = 'superauthor_pass_the_pen_builder_v1';
+      let codeWasEdited = false;
+
+      const els = {
+        baseUrl: document.getElementById('baseUrl'),
+        schoolName: document.getElementById('schoolName'),
+        referralCode: document.getElementById('referralCode'),
+        generatedUrl: document.getElementById('generatedUrl'),
+        emailSnippet: document.getElementById('emailSnippet'),
+        trackingLine: document.getElementById('trackingLine'),
+        openPreview: document.getElementById('openPreview'),
+        openBasePage: document.getElementById('openBasePage'),
+        feedback: document.getElementById('feedback'),
+        previewSchoolEyebrow: document.getElementById('previewSchoolEyebrow'),
+        previewSchoolHeadline: document.getElementById('previewSchoolHeadline'),
+        previewSchoolSignature: document.getElementById('previewSchoolSignature'),
+        previewCode: document.getElementById('previewCode')
+      };
+
+      restore();
+      generate();
+
+      els.schoolName.addEventListener('input', () => {
+        if(!codeWasEdited) els.referralCode.value = makeCode(els.schoolName.value);
+        generate();
+      });
+
+      els.referralCode.addEventListener('input', () => {
+        codeWasEdited = true;
+        els.referralCode.value = normalizeCode(els.referralCode.value);
+        generate();
+      });
+
+      els.baseUrl.addEventListener('input', generate);
+      els.baseUrl.addEventListener('change', generate);
+
+      document.getElementById('generateBtn').addEventListener('click', () => {
+        if(!clean(els.schoolName.value)){
+          flash('Enter a school name.');
+          els.schoolName.focus();
+          return;
+        }
+        generate();
+        flash('Personalized link generated.');
+      });
+
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        els.baseUrl.value = DEFAULT_BASE;
+        els.schoolName.value = '';
+        els.referralCode.value = '';
+        codeWasEdited = false;
+        generate();
+        flash('Fields cleared.');
+      });
+
+      document.querySelectorAll('[data-copy-target]').forEach(button => {
+        button.addEventListener('click', async () => {
+          const target = document.getElementById(button.dataset.copyTarget);
+          if(!target) return;
+          await copyText(target.value);
+          flash('Copied.');
+        });
+      });
+
+      function generate(){
+        const school = clean(els.schoolName.value) || 'Your School';
+        const code = normalizeCode(els.referralCode.value) || makeCode(school);
+        if(!els.referralCode.value && school !== 'Your School') els.referralCode.value = code;
+
+        const url = buildUrl({
+          baseUrl: normalizeBaseUrl(els.baseUrl.value),
+          school,
+          code
+        });
+
+        els.generatedUrl.value = url;
+        els.openPreview.href = url;
+        els.openBasePage.href = normalizeBaseUrl(els.baseUrl.value);
+        els.emailSnippet.value = buildEmailSnippet(school, url);
+        els.trackingLine.value = `${school} | ${code} | ${url}`;
+
+        els.previewSchoolEyebrow.textContent = school;
+        els.previewSchoolHeadline.textContent = school;
+        els.previewSchoolSignature.textContent = school;
+        els.previewCode.textContent = code || '—';
+
+        save();
+      }
+
+      function buildUrl(data){
+        const url = new URL(data.baseUrl || DEFAULT_BASE);
+        url.searchParams.set('school', data.school);
+        url.searchParams.set('ref', data.code);
+        url.searchParams.set('utm_source', 'referral-program');
+        url.searchParams.set('utm_medium', 'school-link');
+        url.searchParams.set('utm_campaign', 'pass-the-pen-2026-27');
+        url.searchParams.set('utm_content', data.code.toLowerCase());
+        return url.toString();
+      }
+
+      function buildEmailSnippet(school, url){
+        return `Your personalized Pass the Pen page for ${school} is ready.\n\nUse this page whenever you know a school leader who should experience SuperAuthor. When a referred school joins the program and completes teacher training, you receive a $100 gift card — and ${school} moves closer to the Author Circle Top 3.\n\n${url}`;
+      }
+
+      function makeCode(value){
+        const base = String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toUpperCase()
+          .replace(/[^A-Z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .replace(/-+/g, '-')
+          .slice(0, 55);
+        return base ? `${base}-26` : '';
+      }
+
+      function normalizeCode(value){
+        return String(value || '')
+          .toUpperCase()
+          .replace(/[^A-Z0-9-]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .slice(0, 80);
+      }
+
+      function normalizeBaseUrl(value){
+        const raw = clean(value) || DEFAULT_BASE;
+        try{
+          const url = new URL(raw);
+          url.search = '';
+          url.hash = '';
+          if(!url.pathname.endsWith('/')) url.pathname += '/';
+          return url.toString();
+        }catch(error){
+          return DEFAULT_BASE;
+        }
+      }
+
+      function clean(value){
+        return String(value || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+      }
+
+      function save(){
+        try{
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            baseUrl: els.baseUrl.value,
+            schoolName: els.schoolName.value,
+            referralCode: els.referralCode.value
+          }));
+        }catch(error){}
+      }
+
+      function restore(){
+        try{
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          if(saved.baseUrl) els.baseUrl.value = saved.baseUrl;
+          if(saved.schoolName) els.schoolName.value = saved.schoolName;
+          if(saved.referralCode){
+            els.referralCode.value = saved.referralCode;
+            codeWasEdited = true;
+          }
+        }catch(error){}
+      }
+
+      async function copyText(text){
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const helper = document.createElement('textarea');
+        helper.value = text;
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand('copy');
+        document.body.removeChild(helper);
+      }
+
+      function flash(message){
+        els.feedback.textContent = message;
+        window.clearTimeout(flash._timer);
+        flash._timer = window.setTimeout(() => els.feedback.textContent = '', 2200);
+      }
+    })();
+  </script>
+</body>
+</html>
